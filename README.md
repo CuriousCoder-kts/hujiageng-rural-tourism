@@ -1,5 +1,6 @@
 # hujiageng-rural-tourism
 Cultural Tourism Guide Mini Program "Mini Ecological Jiangnan" for Hujiadai Village, Songjiang District, Shanghai. It integrates LBS digital maps, UGC check-in records, and rural stories in the forms of images, texts, audios and videos to boost rural revitalization and digitalization of cultural tourism.
+
 Below are screenshots of the project's demo video. The complete video file can be found in the miniprogram/video directory.
 <img width="969" height="2153" alt="10" src="https://github.com/user-attachments/assets/561b99fd-278d-4998-9fde-f366396216b8" />
 <img width="969" height="2153" alt="9" src="https://github.com/user-attachments/assets/a9100a86-4594-4c86-8356-81bd356fd9f6" />
