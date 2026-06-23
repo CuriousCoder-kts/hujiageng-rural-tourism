@@ -1,0 +1,374 @@
+<view class="container">
+  <!-- 顶部视图切换 -->
+  <view class="view-switcher">
+    <view 
+      class="switch-item {{currentView === 'map' ? 'active' : ''}}" 
+      data-view="map"
+      bindtap="switchView"
+    >
+      <image src="/images/footprint/map-view.png" class="switch-icon" />
+      <text>地图视图</text>
+    </view>
+    <view 
+      class="switch-item {{currentView === 'timeline' ? 'active' : ''}}" 
+      data-view="timeline"
+      bindtap="switchView"
+    >
+      <image src="/images/footprint/timeline-view.png" class="switch-icon" />
+      <text>时间线</text>
+    </view>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <image src="/images/loading.gif" class="loading-icon" />
+    <text class="loading-text">足迹加载中...</text>
+  </view>
+  
+  <!-- 地图视图 -->
+  <view 
+    wx:elif="{{currentView === 'map'}}" 
+    class="map-container"
+    style="height: {{windowHeight - 100}}px;"
+  >
+    <map 
+      id="footprintMap"
+      longitude="{{currentLocation.longitude}}" 
+      latitude="{{currentLocation.latitude}}"
+      scale="{{currentLocation.scale}}"
+      markers="{{markers}}"
+      bindmarkertap="markerTap"
+      bindcallouttap="markerTap"
+      class="map"
+      show-location
+      show-compass
+    >
+      <cover-view class="map-legend">
+        <cover-image src="/images/footprint/marker.png" class="legend-icon" />
+        <cover-text>待访问</cover-text>
+        <cover-image src="/images/footprint/yellow-star.png" class="legend-icon" />
+        <cover-text>已点亮</cover-text>
+      </cover-view>
+    </map>
+    
+    <button class="add-button" bindtap="openAddForm">
+      <image src="/images/footprint/add.png" class="add-icon" />
+      <text>添加足迹</text>
+    </button>
+  </view>
+  
+  <!-- 时间线视图 -->
+  <view 
+    wx:elif="{{currentView === 'timeline'}}" 
+    class="timeline-container"
+    style="height: {{windowHeight - 100}}px;"
+  >
+    <scroll-view 
+      scroll-y 
+      class="timeline-list"
+      enhanced
+      bounces="{{false}}"
+    >
+      <view class="add-card" bindtap="openAddForm">
+        <image src="/images/footprint/add.png" class="add-icon" />
+        <text>添加新足迹</text>
+      </view>
+      
+      <block wx:for="{{footprints}}" wx:key="_id">
+        <view 
+          class="timeline-item" 
+          data-id="{{item._id}}" 
+          bindtap="footprintTap"
+        >
+          <view class="timeline-date">
+            <text class="date">{{item.visitDate}}</text>
+            <text class="duration">停留 {{item.duration}} 天</text>
+          </view>
+          
+          <view class="timeline-content">
+            <text class="village-name">{{item.landmark.title}}</text>
+            
+            <view class="photos">
+              <block wx:for="{{item.photos}}" wx:key="*this" wx:if="{{index < 3}}">
+                <image 
+                  src="{{item}}" 
+                  mode="aspectFill" 
+                  class="photo" 
+                  data-index="{{index}}"
+                  binderror="handleImageError"
+                  bindtap="previewImage"
+                />
+              </block>
+              <view 
+                wx:if="{{item.photos.length > 3}}" 
+                class="more-photos"
+              >
+                +{{item.photos.length - 3}}张
+              </view>
+            </view>
+            
+            <view class="note-container">
+              <text class="note">{{item.note}}</text>
+            </view>
+            
+            <view class="favorite" wx:if="{{item.favorite}}">
+              <image src="/images/footprint/yellow-star.png" class="favorite-icon" />
+              <text>已收藏</text>
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <view wx:if="{{footprints.length === 0}}" class="empty-timeline">
+        <image src="/images/footprint/empty-footprint.png" class="empty-icon" />
+        <text class="empty-text">暂无足迹记录</text>
+        <text class="empty-tip">点击上方按钮添加您的第一条足迹</text>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 足迹详情弹窗 -->
+  <view 
+    wx:if="{{showDetail && selectedFootprint}}" 
+    class="detail-modal"
+    catchtouchmove="preventTouchMove"
+  >
+    <view class="modal-mask" bindtap="closeDetail"></view>
+    <view class="modal-content">
+      <view class="detail-header">
+        <text class="village-name">{{selectedFootprint.landmark.title}}</text>
+        <view class="header-actions">
+          <button 
+            class="action-btn {{selectedFootprint.favorite ? 'active' : ''}}" 
+            bindtap="toggleFavorite"
+          >
+            <image 
+              src="{{selectedFootprint.favorite ? '/images/footprint/star-filled.png' : '/images/footprint/yellow-star.png'}}" 
+              class="action-icon" 
+            />
+          </button>
+
+        </view>
+      </view>
+      
+      <view class="detail-date">
+        <text>{{selectedFootprint.visitDate}}</text>
+        <text>停留 {{selectedFootprint.duration}} 天</text>
+      </view>
+      
+      <swiper 
+        wx:if="{{selectedFootprint.photos && selectedFootprint.photos.length > 0}}"
+        class="detail-swiper" 
+        indicator-dots 
+        autoplay
+        circular
+      >
+        <block wx:for="{{selectedFootprint.photos}}" wx:key="*this">
+          <swiper-item>
+            <image 
+              src="{{item}}" 
+              mode="aspectFit" 
+              class="detail-image" 
+              binderror="handleImageError"
+              data-index="{{index}}"
+              bindtap="previewImage"
+            />
+          </swiper-item>
+        </block>
+      </swiper>
+      
+      <view wx:if="{{selectedFootprint.note}}" class="detail-note">
+        <text class="section-title">我的游记</text>
+        <scroll-view scroll-y class="note-content">
+          <text>{{selectedFootprint.note}}</text>
+        </scroll-view>
+      </view>
+      
+      <view class="detail-map">
+        <text class="section-title">村落位置</text>
+        <map 
+          longitude="{{selectedFootprint.landmark.longitude}}" 
+          latitude="{{selectedFootprint.landmark.latitude}}"
+          scale="14"
+          markers="{{[{id: 'current', latitude: selectedFootprint.landmark.latitude, longitude: selectedFootprint.landmark.longitude, iconPath: '/images/footprint/location.png', width: 40, height: 40}]}}"
+          class="mini-map"
+        />
+      </view>
+    </view>
+  </view>
+  
+  <!-- 添加足迹表单 -->
+  <view 
+    wx:if="{{showAddForm}}" 
+    class="add-modal"
+    catchtouchmove="preventTouchMove"
+  >
+    <view class="modal-mask" bindtap="closeAddForm"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="title">添加新足迹</text>
+        <button class="close-btn" bindtap="closeAddForm">
+          <image src="/images/footprint/close.png" class="close-icon" />
+        </button>
+      </view>
+      
+      <scroll-view scroll-y class="form-content">
+        <view class="form-item">
+          <text class="label">选择地标</text>
+          <picker 
+            range="{{landmarks}}" 
+            range-key="title"
+            value="{{selectedLandmarkIndex}}"
+            bindchange="onLandmarkChange"
+          >
+            <view class="picker">
+              <text wx:if="{{landmarks[selectedLandmarkIndex]}}">
+                {{landmarks[selectedLandmarkIndex].title}}
+              </text>
+              <text wx:else class="placeholder">请选择地标</text>
+              <image src="/images/footprint/arrow.png" class="arrow" />
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item">
+          <text class="label">访问日期</text>
+          <picker 
+            mode="date" 
+            value="{{newFootprint.visitDate}}"
+            start="2020-01-01"
+            end="2030-12-31"
+            bindchange="selectDate"
+          >
+            <view class="picker">
+              <text>{{newFootprint.visitDate || '请选择日期'}}</text>
+              <image src="/images/footprint/arrow.png" class="arrow" />
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item">
+          <text class="label">停留天数</text>
+          <picker 
+            range="{{[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}}"
+            value="{{newFootprint.duration - 1}}"
+            bindchange="setDuration"
+          >
+            <view class="picker">
+              <text>{{newFootprint.duration}} 天</text>
+              <image src="/images/footprint/arrow.png" class="arrow" />
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item">
+          <text class="label">上传照片 ({{newFootprint.photos.length}}/9)</text>
+          <view class="photos-container">
+            <block wx:for="{{newFootprint.photos}}" wx:key="*this">
+              <view class="photo-item">
+                <image src="{{item}}" mode="aspectFill" class="photo" />
+                <button 
+                  class="remove-btn" 
+                  data-index="{{index}}"
+                  bindtap="removePhoto"
+                >
+                  <image 
+                    src="/images/footprint/remove.png" 
+                    class="remove-icon" 
+                  />
+                </button>
+              </view>
+            </block>
+            <button 
+              class="add-photo" 
+              bindtap="addPhoto"
+              wx:if="{{newFootprint.photos.length < 9}}"
+            >
+              <image src="/images/footprint/add.png" class="add-icon" />
+              <text>添加照片</text>
+            </button>
+          </view>
+        </view>
+        
+        <view class="form-item">
+          <text class="label">游记感想</text>
+          <textarea 
+            placeholder="写下您的旅行感想..." 
+            value="{{newFootprint.note}}"
+            placeholder="记录下您在胡家埭村的独家记忆..."
+            maxlength="200"
+            auto-height
+            bindinput="inputNote"
+          />
+        </view>
+      </scroll-view>
+      
+      <view class="modal-footer">
+        <button class="save-btn" bindtap="saveNewFootprint">保存足迹</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新增：地标详情弹窗 -->
+  <view 
+    wx:if="{{showLandmarkDetail && selectedLandmark}}" 
+    class="detail-modal"
+    catchtouchmove="preventTouchMove"
+  >
+    <view class="modal-mask" bindtap="closeLandmarkDetail"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="title">{{selectedLandmark.title}}</text>
+        <button class="close-btn" bindtap="closeLandmarkDetail">
+          <image src="/images/footprint/close.png" class="close-icon" />
+        </button>
+      </view>
+      
+      <scroll-view scroll-y class="detail-scroll-content">
+        <!-- 官方介绍 -->
+        <view class="detail-section official-section">
+          <text class="section-title">官方介绍</text>
+          <swiper 
+            wx:if="{{selectedLandmark.showcaseImages.length > 0}}"
+            class="detail-swiper" 
+            indicator-dots 
+            autoplay
+            circular
+          >
+            <block wx:for="{{selectedLandmark.showcaseImages}}" wx:key="*this">
+              <swiper-item>
+                <image src="{{item}}" mode="aspectFill" class="detail-image" />
+              </swiper-item>
+            </block>
+          </swiper>
+          <text class="description">{{selectedLandmark.description}}</text>
+        </view>
+
+        <!-- 分割线 -->
+        <view class="divider"></view>
+        
+        <!-- 用户足迹 -->
+        <view class="detail-section user-section">
+          <text class="section-title">我的足迹</text>
+          <block wx:if="{{selectedLandmark.isVisited}}">
+            <view class="user-footprint">
+              <view class="user-photos">
+                <block wx:for="{{selectedLandmark.userFootprint.photos}}" wx:key="*this">
+                  <image src="{{item}}" class="user-photo-thumb" mode="aspectFill" />
+                </block>
+              </view>
+              <text class="user-note">"{{selectedLandmark.userFootprint.note}}"</text>
+              <text class="user-visit-date">记录于 {{selectedLandmark.userFootprint.visitDate}}</text>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="no-footprint">
+              <text>您还未点亮此地，快来添加您的第一条足迹吧！</text>
+              <button class="add-footprint-btn" bindtap="onAddFromDetail">去添加</button>
+            </view>
+          </block>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

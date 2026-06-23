@@ -1,0 +1,40 @@
+<!-- 轮播图 -->
+<swiper autoplay circular indicator-dots indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#4CAF50">
+  <block wx:for="{{village.images}}" wx:key="*this">
+    <swiper-item>
+      <image src="{{item}}" mode="aspectFill" class="swiper-image" />
+    </swiper-item>
+  </block>
+</swiper>
+
+<!-- 村落基本信息 -->
+<view class="info-card">
+  <view class="title">{{village.name}}</view>
+  
+  <view class="info-item">
+    <image src="/images/location.png" class="icon" />
+    <text class="content">{{village.location}}</text>
+  </view>
+  
+  <view class="info-item">
+    <image src="/images/history.png" class="icon" />
+    <text class="content">{{village.history}}</text>
+  </view>
+  
+  <view class="honors">
+    <block wx:for="{{village.honors}}" wx:key="*this">
+      <view class="badge">{{item}}</view>
+    </block>
+  </view>
+</view>
+
+<!-- 村落宣传视频 -->
+  <!-- poster="{{village.video}}" -->
+<view class="section-title">村落风光</view>
+<video 
+  src="{{village.video}}" 
+  controls 
+  autoplay 
+  muted 
+  poster="http://image.thepaper.cn/www/image/29/97/525.jpg"
+  class="village-video" />

@@ -1,0 +1,37 @@
+{
+    "pages": [
+      "pages/index/index",
+      "pages/features/index",
+      "pages/memories/index",
+      "pages/footprint/index"
+    ],
+    "window": {
+      "navigationBarTitleText": "乡村记忆",
+      "navigationBarBackgroundColor": "#4CAF50",
+      "navigationBarTextStyle": "white"
+    },
+    "tabBar": {
+        "color": "#8a8a8a",
+        "selectedColor": "#4CAF50",
+        "borderStyle": "white",
+        "backgroundColor": "#ffffff",
+        "list": [
+          {
+            "pagePath": "pages/index/index",
+            "text": "首页"
+          },
+          {
+            "pagePath": "pages/features/index",
+            "text": "乡村特色"
+          },
+          {
+            "pagePath": "pages/memories/index",
+            "text": "村民记忆"
+          },
+          {
+            "pagePath": "pages/footprint/index",
+            "text": "我的足迹"
+          }
+        ]
+      }
+  }

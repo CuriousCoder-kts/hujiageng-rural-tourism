@@ -1,0 +1,101 @@
+<view class="container">
+  <!-- 顶部扫码区域 -->
+  <view class="scan-section">
+    <view class="scan-card" bindtap="scanQRCode">
+      <image src="/images/memories/scan-icon.png" class="scan-icon" />
+      <text class="scan-text">扫码听故事</text>
+      <text class="scan-tip">扫描村落中的二维码</text>
+    </view>
+    
+    <!-- 扫码提示 -->
+    <view wx:if="{{showScanTip}}" class="scan-guide">
+      <image src="/images/memories/guide.png" class="guide-image" />
+      <text class="guide-text">将二维码放入框内，即可播放故事</text>
+    </view>
+    <view wx:else class="scan-hint" bindtap="showScanGuide">
+      <text>如何使用？</text>
+    </view>
+  </view>
+  
+  <!-- 分割线 -->
+  <view class="divider">
+    <text class="divider-text">村民故事</text>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <image src="/images/loading.gif" class="loading-icon" />
+    <text>故事加载中...</text>
+  </view>
+  
+  <!-- 故事列表 -->
+  <scroll-view wx:else class="story-list" scroll-y>
+    <block wx:for="{{stories}}" wx:key="_id">
+      <view class="story-item">
+        <!-- 故事头部 -->
+        <view class="story-header">
+          <text class="story-title">{{item.title}}</text>
+          <text class="story-location">📍 {{item.location}}</text>
+        </view>
+        
+        <!-- 音频控制 -->
+        <view class="audio-control" data-id="{{item._id}}" bindtap="togglePlay">
+          <image 
+            class="play-icon" 
+            src="{{playingAudioId === item._id ? '/images/memories/pause.png' : '/images/memories/play.png'}}" 
+          />
+          <text class="play-text">
+            {{playingAudioId === item._id ? '播放中...' : '播放故事'}}
+          </text>
+          <view class="progress-bar">
+            <view 
+              class="progress" 
+              style="{{playingAudioId === item._id ? 'width:50%' : 'width:0'}}"
+            ></view>
+          </view>
+        </view>
+        
+        <!-- 故事内容 -->
+        <view class="story-content">
+          <text>{{item.content}}</text>
+        </view>
+        
+        <!-- 操作区域 -->
+        <view class="story-actions">
+          <view 
+            class="action-btn" 
+            data-id="{{item._id}}" 
+            bindtap="likeStory"
+          >
+            <image class="action-icon" src="/images/memories/like.png" />
+            <text class="action-text">{{item.likes || 0}}</text>
+          </view>
+          
+          <view 
+            class="action-btn" 
+            data-id="{{item._id}}" 
+            bindtap="goToComments"
+          >
+            <image class="action-icon" src="/images/memories/comment.png" />
+            <text class="action-text">评论</text>
+          </view>
+          
+          <view 
+            class="action-btn" 
+            data-id="{{item._id}}" 
+            bindtap="collectStory"
+          >
+            <image class="action-icon" src="/images/memories/collect.png" />
+            <text class="action-text">收藏</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    
+    <!-- 空状态 -->
+    <view wx:if="{{stories.length === 0}}" class="empty">
+      <image src="/images/memories/empty-story.png" class="empty-icon" />
+      <text class="empty-text">暂无故事，请扫码添加</text>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,241 @@
+/* 修复页面整体滚动问题 */
+.container {
+    background-color: #f8f9fa;
+    height: 100vh; /* 保持视口高度 */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 关键：隐藏外部滚动 */
+  }
+  
+  /* 分类标签栏 - 固定高度 */
+  .type-tabs {
+    width: 100%;
+    white-space: nowrap;
+    background-color: #fff;
+    padding: 20rpx 0;
+    border-bottom: 1rpx solid #eee;
+    flex-shrink: 0; /* 禁止收缩 */
+    position: sticky; /* 滚动时固定在顶部 */
+    top: 0;
+    z-index: 10;
+  }
+  
+  .type-item {
+    display: inline-block;
+    padding: 10rpx 30rpx;
+    margin: 0 10rpx;
+    border-radius: 30rpx;
+    font-size: 28rpx;
+    color: #666;
+    transition: all 0.3s;
+  }
+  
+  .type-item.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  /* 内容区域 - 弹性容器 */
+  .content-area {
+    flex: 1; /* 占据剩余空间 */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 隐藏内部溢出 */
+  }
+  
+  /* 加载状态 */
+  .loading {
+    flex: 1; /* 占据整个内容区域 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+  
+  .loading-icon {
+    width: 80rpx;
+    height: 80rpx;
+    margin-bottom: 20rpx;
+  }
+  
+  /* 特色项目列表 - 滚动容器 */
+  .feature-list {
+    flex: 1; /* 关键：占据内容区域全部空间 */
+    overflow-y: auto; /* 仅在需要时显示滚动条 */
+    padding: 20rpx;
+    box-sizing: border-box;
+  }
+  
+  /* 修复滚动条跳动问题 */
+  .feature-list::-webkit-scrollbar {
+    width: 6rpx;
+  }
+  
+  .feature-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 3rpx;
+  }
+  
+  .feature-item {
+    display: flex;
+    margin-bottom: 30rpx;
+    background: white;
+    border-radius: 16rpx;
+    overflow: hidden;
+    box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  }
+  
+  .feature-image {
+    width: 240rpx;
+    height: 240rpx;
+    flex-shrink: 0;
+  }
+  
+  .feature-info {
+    flex: 1;
+    padding: 20rpx;
+    display: flex;
+    flex-direction: column;
+    min-height: 240rpx; /* 确保高度一致 */
+  }
+  
+  .feature-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10rpx;
+  }
+  
+  .feature-type {
+    font-size: 24rpx;
+    color: #4CAF50;
+    background: #e8f5e9;
+    padding: 4rpx 12rpx;
+    border-radius: 8rpx;
+    align-self: flex-start;
+    margin-bottom: 15rpx;
+  }
+  
+  .feature-desc {
+    font-size: 26rpx;
+    color: #666;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    flex: 1; /* 使描述区域弹性填充 */
+  }
+  
+  /* 空状态 */
+  .empty {
+    flex: 1; /* 占据整个内容区域 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+  
+  .empty-icon {
+    width: 180rpx;
+    height: 180rpx;
+    margin-bottom: 20rpx;
+    opacity: 0.5;
+  }
+  
+  /* 详情弹窗 */
+  .detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+  }
+  
+  .modal-content {
+    position: relative;
+    width: 90%;
+    max-height: 90vh;
+    background: white;
+    border-radius: 16rpx;
+    overflow: hidden;
+    z-index: 1000;
+    padding: 30rpx;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .detail-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+  
+  .detail-title {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
+    margin-right: 20rpx;
+  }
+  
+  .detail-type {
+    font-size: 24rpx;
+    color: #4CAF50;
+    background: #e8f5e9;
+    padding: 4rpx 12rpx;
+    border-radius: 8rpx;
+  }
+  
+  .close-icon {
+    position: absolute;
+    top: 30rpx;
+    right: 30rpx;
+  }
+  
+  .detail-swiper {
+    height: 400rpx;
+    margin-bottom: 30rpx;
+    flex-shrink: 0; /* 固定高度 */
+  }
+  
+  .detail-image {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .detail-section {
+    margin-bottom: 30rpx;
+    flex: 1; /* 弹性填充剩余空间 */
+    overflow-y: auto; /* 允许内容滚动 */
+  }
+  
+  .section-title {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15rpx;
+    display: block;
+  }
+  
+  .detail-text {
+    font-size: 28rpx;
+    color: #555;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }

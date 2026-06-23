@@ -1,0 +1,78 @@
+<view class="container">
+  <!-- 分类标签栏 -->
+  <scroll-view scroll-x class="type-tabs">
+    <block wx:for="{{types}}" wx:key="*this">
+      <view 
+        class="type-item {{activeType === item ? 'active' : ''}}" 
+        data-type="{{item}}"
+        bindtap="switchType"
+      >
+        {{item}}
+      </view>
+    </block>
+  </scroll-view>
+  
+  <!-- 内容区域 -->
+  <view class="content-area">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading">
+      <image src="/images/loading.gif" class="loading-icon" />
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 特色项目列表 -->
+    <view wx:else class="feature-list">
+      <block wx:for="{{features}}" wx:key="_id">
+        <view 
+          wx:if="{{activeType === '全部' || item.type === activeType}}"
+          class="feature-item"
+          data-id="{{item._id}}"
+          bindtap="showFeatureDetail"
+        >
+          <image class="feature-image" src="{{item.images[0]}}" mode="aspectFill" />
+          <view class="feature-info">
+            <view class="feature-title">{{item.title}}</view>
+            <view class="feature-type">{{item.type}}</view>
+            <view class="feature-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </block>
+      
+      <!-- 空状态 -->
+      <view wx:if="{{features.length === 0}}" class="empty">
+        <image src="/images/empty.png" class="empty-icon" />
+        <text>暂无特色项目</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 详情弹窗 -->
+  <view wx:if="{{showDetail}}" class="detail-modal">
+    <view class="modal-mask" bindtap="closeDetail"></view>
+    <view class="modal-content">
+      <view class="detail-header">
+        <text class="detail-title">{{currentFeature.title}}</text>
+        <text class="detail-type">{{currentFeature.type}}</text>
+        <icon type="cancel" size="20" color="#999" bindtap="closeDetail" class="close-icon" />
+      </view>
+      
+      <swiper class="detail-swiper" indicator-dots autoplay>
+        <block wx:for="{{currentFeature.images}}" wx:key="*this">
+          <swiper-item>
+            <image src="{{item}}" mode="aspectFit" class="detail-image" />
+          </swiper-item>
+        </block>
+      </swiper>
+      
+      <view class="detail-section">
+        <text class="section-title">项目简介</text>
+        <text class="detail-text">{{currentFeature.description}}</text>
+      </view>
+      
+      <view class="detail-section">
+        <text class="section-title">详细信息</text>
+        <text class="detail-text">{{currentFeature.detail}}</text>
+      </view>
+    </view>
+  </view>
+</view>
