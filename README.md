@@ -13,18 +13,18 @@ Cultural Tourism Guide Mini Program "Mini Ecological Jiangnan" for Hujiadai Vill
 | :---: | :---: |
 | <img width="250" alt="3" src="https://github.com/user-attachments/assets/bc744291-ede6-4574-b9c1-0d33b6523154" /> | <img width="250" alt="4" src="https://github.com/user-attachments/assets/725663a9-51e1-4144-b523-82e88edb87f5" /> |
 
-| 荷花产业访谈音频 | 乡村故事音频播放 |
+| 荷花产业访谈音频 | 地图概览（LBS导览） |
 | :---: | :---: |
 | <img width="250" alt="5" src="https://github.com/user-attachments/assets/909c3252-4050-47ba-b543-9c7d5a2d12fc" /> | <img width="250" alt="6" src="https://github.com/user-attachments/assets/105549d6-d5e2-44fc-a20f-2472532c8c62" /> |
 
-| 地图概览（LBS导览） | 地标详情展示 |
+| 地图概览（地标详情） | 添加足迹（UGC打卡） |
 | :---: | :---: |
 | <img width="250" alt="7" src="https://github.com/user-attachments/assets/ef2a527e-b24d-4b77-bb0e-96cb9a36ad44" /> | <img width="250" alt="8" src="https://github.com/user-attachments/assets/f4b84c0d-f85b-4d7d-8234-159163095133" /> |
 
-| 添加足迹（UGC打卡） | 足迹时间线记录 |
+| 添加足迹（UGC打卡） | 添加足迹（UGC打卡） |
 | :---: | :---: |
 | <img width="250" alt="9" src="https://github.com/user-attachments/assets/a9100a86-4594-4c86-8356-81bd356fd9f6" /> | <img width="250" alt="10" src="https://github.com/user-attachments/assets/561b99fd-278d-4998-9fde-f366396216b8" /> |
 
-| 足迹打卡完成提交 |
+| 足迹时间线记录 |
 | :---: |
 | <img width="250" alt="11" src="https://github.com/user-attachments/assets/2ea8a90d-b52e-4c5a-8be2-925b2f675846" /> |
